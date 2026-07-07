@@ -24,4 +24,5 @@ contextBridge.exposeInMainWorld('oyen', {
   openSettings: () => ipcRenderer.send('open-settings'),
   ready: () => ipcRenderer.send('renderer-ready'),
   getSettings: () => ipcRenderer.invoke('get-settings'),
+  logError: (info) => ipcRenderer.send('renderer-error', info),
 });

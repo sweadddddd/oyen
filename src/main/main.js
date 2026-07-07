@@ -6,6 +6,7 @@ const {
   screen,
   ipcMain,
   nativeImage,
+  shell,
 } = require('electron');
 const path = require('path');
 
@@ -16,6 +17,32 @@ const { StatusWatcher } = require('./statusWatcher');
 const { createTray } = require('./tray');
 const { encodePNG } = require('../shared/pngEncoder');
 const { renderOyenIcon } = require('../shared/oyenIcon');
+const fs = require('fs');
+
+// --- Debug logging ---------------------------------------------------------
+// Appends to <userData>/oyen-debug.log so problems on machines we can't attach
+// to (a blank overlay, a native-module failure) leave a trace the user can
+// share. Also honoured: set OYEN_DEBUG=1 to auto-open the overlay DevTools.
+const DEBUG = process.env.OYEN_DEBUG === '1' || process.argv.includes('--debug');
+let logFilePath = null;
+function logDebug(...parts) {
+  const line = `[${new Date().toISOString()}] ${parts
+    .map((p) => (typeof p === 'string' ? p : JSON.stringify(p)))
+    .join(' ')}\n`;
+  try {
+    if (logFilePath) fs.appendFileSync(logFilePath, line);
+  } catch (e) {
+    /* ignore */
+  }
+  if (DEBUG) console.log(line.trimEnd());
+}
+
+process.on('uncaughtException', (err) => {
+  logDebug('uncaughtException', err && (err.stack || err.message || String(err)));
+});
+process.on('unhandledRejection', (reason) => {
+  logDebug('unhandledRejection', String(reason));
+});
 
 // Single instance — a desktop pet should never spawn duplicates.
 if (!app.requestSingleInstanceLock()) {
@@ -112,10 +139,28 @@ function createOverlay() {
 
   overlayWin.loadFile(path.join(__dirname, '..', 'renderer', 'index.html'));
 
+  // Diagnostics so a blank/broken renderer isn't a silent failure.
+  const wc = overlayWin.webContents;
+  wc.on('did-fail-load', (_e, code, desc, url) =>
+    logDebug('overlay did-fail-load', code, desc, url)
+  );
+  wc.on('preload-error', (_e, p, err) =>
+    logDebug('overlay preload-error', p, err && err.message)
+  );
+  wc.on('render-process-gone', (_e, details) =>
+    logDebug('overlay render-process-gone', details)
+  );
+  wc.on('console-message', (_e, level, message, line, sourceId) => {
+    // level 2 = warning, 3 = error; capture those (CSP violations show here).
+    if (level >= 2) logDebug('overlay console', message, `${sourceId}:${line}`);
+  });
+
   overlayWin.once('ready-to-show', () => {
     overlayWin.show();
     sendGeometry();
     pushSettings();
+    logDebug('overlay ready-to-show; virtual', getVirtualBounds());
+    if (DEBUG) wc.openDevTools({ mode: 'detach' });
   });
 
   overlayWin.on('closed', () => {
@@ -286,7 +331,9 @@ function wireIpc() {
   ipcMain.on('renderer-ready', () => {
     sendGeometry();
     pushSettings();
+    logDebug('renderer-ready');
   });
+  ipcMain.on('renderer-error', (_e, info) => logDebug('renderer-error', info));
 
   ipcMain.handle('get-settings', () => settings.get());
   ipcMain.handle('update-settings', (_e, patch) => {
@@ -319,6 +366,9 @@ app.on('second-instance', () => {
 app.whenReady().then(() => {
   if (process.platform === 'win32') app.setAppUserModelId('com.oyen.desktoppet');
 
+  logFilePath = path.join(app.getPath('userData'), 'oyen-debug.log');
+  logDebug('app ready', 'v' + app.getVersion(), process.platform, process.arch);
+
   settings = new SettingsStore(app.getPath('userData'));
 
   createOverlay();
@@ -327,11 +377,22 @@ app.whenReady().then(() => {
   wireForeground();
   wireStatus();
 
+  logDebug('input hook available:', input ? input.available : false);
+
   trayCtl = createTray({
     isVisible: () => overlayVisible,
     onToggleShow: toggleOverlayVisible,
     onOpenSettings: openSettingsWindow,
     onQuit: () => app.quit(),
+    onToggleDevTools: () => {
+      if (!overlayWin) return;
+      const wc = overlayWin.webContents;
+      if (wc.isDevToolsOpened()) wc.closeDevTools();
+      else wc.openDevTools({ mode: 'detach' });
+    },
+    onOpenLog: () => {
+      if (logFilePath) shell.showItemInFolder(logFilePath);
+    },
   });
 
   screen.on('display-added', onDisplaysChanged);

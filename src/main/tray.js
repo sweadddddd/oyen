@@ -15,7 +15,14 @@ function makeTrayImage() {
   return img;
 }
 
-function createTray({ onToggleShow, onOpenSettings, onQuit, isVisible }) {
+function createTray({
+  onToggleShow,
+  onOpenSettings,
+  onQuit,
+  isVisible,
+  onToggleDevTools,
+  onOpenLog,
+}) {
   const tray = new Tray(makeTrayImage());
   tray.setToolTip('Oyen Desktop Pet');
 
@@ -30,6 +37,13 @@ function createTray({ onToggleShow, onOpenSettings, onQuit, isVisible }) {
       },
       { type: 'separator' },
       { label: 'Settings…', click: onOpenSettings },
+      {
+        label: 'Troubleshoot',
+        submenu: [
+          { label: 'Toggle DevTools', click: () => onToggleDevTools && onToggleDevTools() },
+          { label: 'Open debug log…', click: () => onOpenLog && onOpenLog() },
+        ],
+      },
       { type: 'separator' },
       { label: 'Quit', click: onQuit },
     ]);

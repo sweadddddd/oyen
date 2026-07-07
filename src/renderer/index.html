@@ -2,8 +2,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <!-- The renderer is served from a file:// URL (dev loadFile + packaged
+         asar). Chromium's 'self' does NOT match the opaque file: origin, so the
+         file: scheme must be listed explicitly or the external <script> tags are
+         blocked and nothing renders. No remote schemes = still no network. -->
     <meta http-equiv="Content-Security-Policy"
-      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;" />
+      content="default-src 'none'; script-src 'self' file:; style-src 'self' file: 'unsafe-inline'; img-src 'self' file: data:;" />
     <title>Oyen</title>
     <link rel="stylesheet" href="styles.css" />
   </head>

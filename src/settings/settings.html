@@ -2,8 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <!-- file: scheme required so the external script/stylesheet load on the
+         file:// page (Chromium 'self' does not cover opaque file: origins). -->
     <meta http-equiv="Content-Security-Policy"
-      content="default-src 'none'; script-src 'self'; style-src 'self';" />
+      content="default-src 'none'; script-src 'self' file:; style-src 'self' file:;" />
     <title>Oyen Settings</title>
     <link rel="stylesheet" href="settings.css" />
   </head>

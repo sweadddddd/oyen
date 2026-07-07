@@ -625,6 +625,34 @@ class App {
   }
 }
 
+// Surface any renderer failure to the main-process debug log (a blank overlay
+// would otherwise be a silent mystery).
+function reportError(where, err) {
+  try {
+    const info = {
+      where,
+      message: err && (err.message || String(err)),
+      stack: err && err.stack,
+    };
+    if (window.oyen && window.oyen.logError) window.oyen.logError(info);
+    // eslint-disable-next-line no-console
+    console.error('[oyen]', where, err);
+  } catch (e) {
+    /* ignore */
+  }
+}
+
+window.addEventListener('error', (e) =>
+  reportError('window.error', e.error || e.message)
+);
+window.addEventListener('unhandledrejection', (e) =>
+  reportError('unhandledrejection', e.reason)
+);
+
 window.addEventListener('DOMContentLoaded', () => {
-  window._oyenApp = new App();
+  try {
+    window._oyenApp = new App();
+  } catch (err) {
+    reportError('App init', err);
+  }
 });
