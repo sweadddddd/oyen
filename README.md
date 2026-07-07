@@ -119,6 +119,20 @@ Copy that `.exe` anywhere and double-click it — no installer, no admin rights.
 > Building a Windows target is easiest **on Windows**. Building from
 > macOS/Linux requires Wine for `electron-builder`'s Windows packaging.
 
+### Automated builds (GitHub Actions)
+
+A Windows CI workflow ([`.github/workflows/build-windows.yml`](.github/workflows/build-windows.yml))
+builds the portable `.exe` on a `windows-latest` runner:
+
+- **Push a version tag** (e.g. `git tag v1.0.0 && git push origin v1.0.0`) to
+  build **and publish** the `.exe` to a GitHub **Release** — a permanent
+  download URL.
+- **Run workflow** manually (Actions tab) to build the `.exe` as a downloadable
+  workflow **artifact**.
+
+This is the recommended way to obtain a distributable binary without a local
+Windows machine. (GitHub Actions must be enabled for the repository.)
+
 ---
 
 ## Settings
