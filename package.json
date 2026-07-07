@@ -1,6 +1,6 @@
 {
   "name": "oyen-desktop-pet",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Oyen Desktop Pet — a hand-pixel-art cat that lives on your Windows desktop and reacts to system-wide input.",
   "main": "src/main/main.js",
   "author": "Oyen",
