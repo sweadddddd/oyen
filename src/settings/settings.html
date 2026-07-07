@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self';" />
+    <title>Oyen Settings</title>
+    <link rel="stylesheet" href="settings.css" />
+  </head>
+  <body>
+    <h1>🐱 Oyen Settings</h1>
+
+    <section>
+      <h2>General</h2>
+      <label class="row">
+        <span>Your name</span>
+        <input id="userName" type="text" placeholder="friend" maxlength="24" />
+      </label>
+      <label class="row">
+        <span>Sprite scale</span>
+        <input id="spriteScale" type="range" min="3" max="7" step="1" />
+        <output id="spriteScaleOut"></output>
+      </label>
+      <label class="row check">
+        <input id="muteSound" type="checkbox" />
+        <span>Mute sounds</span>
+      </label>
+    </section>
+
+    <section>
+      <h2>Stretch reminder</h2>
+      <label class="row check">
+        <input id="stretchEnabled" type="checkbox" />
+        <span>Enabled</span>
+      </label>
+      <label class="row">
+        <span>Every (minutes)</span>
+        <input id="stretchIntervalMin" type="number" min="1" max="600" />
+      </label>
+    </section>
+
+    <section>
+      <h2>Pomodoro</h2>
+      <label class="row check">
+        <input id="pomodoroEnabled" type="checkbox" />
+        <span>Enabled</span>
+      </label>
+      <label class="row">
+        <span>Focus (min)</span>
+        <input id="pomodoroFocusMin" type="number" min="1" max="180" />
+      </label>
+      <label class="row">
+        <span>Break (min)</span>
+        <input id="pomodoroBreakMin" type="number" min="1" max="60" />
+      </label>
+    </section>
+
+    <section>
+      <h2>Timed message</h2>
+      <label class="row check">
+        <input id="reminderEnabled" type="checkbox" />
+        <span>Enabled</span>
+      </label>
+      <label class="row">
+        <span>Time</span>
+        <input id="reminderTime" type="time" />
+      </label>
+      <label class="col">
+        <span>Message (use {name})</span>
+        <input id="reminderText" type="text" maxlength="120" />
+      </label>
+    </section>
+
+    <section>
+      <h2>Pinned note</h2>
+      <label class="row check">
+        <input id="pinnedEnabled" type="checkbox" />
+        <span>Show pinned bubble</span>
+      </label>
+      <label class="col">
+        <span>Note (use {name})</span>
+        <input id="pinnedMessage" type="text" maxlength="120" />
+      </label>
+    </section>
+
+    <section>
+      <h2>Agent status</h2>
+      <label class="row check">
+        <input id="statusWatchEnabled" type="checkbox" />
+        <span>Watch a status file</span>
+      </label>
+      <label class="col">
+        <span>File path</span>
+        <input id="statusFile" type="text" />
+      </label>
+    </section>
+
+    <div class="actions">
+      <span id="saved" class="saved hidden">saved ✓</span>
+      <button id="closeBtn" type="button">Close</button>
+    </div>
+
+    <script src="settings.js"></script>
+  </body>
+</html>

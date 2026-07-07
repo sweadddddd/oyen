@@ -1,0 +1,55 @@
+{
+  "name": "oyen-desktop-pet",
+  "version": "1.0.0",
+  "description": "Oyen Desktop Pet — a hand-pixel-art cat that lives on your Windows desktop and reacts to system-wide input.",
+  "main": "src/main/main.js",
+  "author": "Oyen",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "gen-icon": "node scripts/gen-icon.js",
+    "prebuild": "node scripts/gen-icon.js",
+    "rebuild": "electron-rebuild -f -w uiohook-napi",
+    "postinstall": "node scripts/gen-icon.js",
+    "build": "npm run gen-icon && electron-builder --win portable"
+  },
+  "dependencies": {
+    "active-win": "^8.2.1",
+    "uiohook-napi": "^1.5.4"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^3.6.0",
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.oyen.desktoppet",
+    "productName": "Oyen Desktop Pet",
+    "asar": true,
+    "asarUnpack": [
+      "**/node_modules/uiohook-napi/**",
+      "**/node_modules/active-win/**"
+    ],
+    "files": [
+      "src/**/*",
+      "scripts/oyen-status.sh",
+      "build/icon.*"
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.png"
+    },
+    "portable": {
+      "artifactName": "OyenDesktopPet-${version}-portable.exe"
+    }
+  }
+}

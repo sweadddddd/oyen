@@ -1,0 +1,129 @@
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  padding: 14px 16px 70px;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 13px;
+  color: #3a2f22;
+  background: #fbf6ec;
+}
+
+h1 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+h2 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #b5813f;
+}
+
+section {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid #e6d6b6;
+  border-radius: 8px;
+}
+
+.row,
+.col {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.col {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.row > span,
+.col > span {
+  flex: 0 0 120px;
+  color: #5a4a33;
+}
+
+.col > span {
+  flex: none;
+  font-size: 12px;
+  color: #8a7550;
+}
+
+.row.check {
+  gap: 8px;
+}
+
+.row.check > span {
+  flex: none;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="time"] {
+  flex: 1;
+  padding: 5px 7px;
+  font: inherit;
+  border: 1px solid #cbb78a;
+  border-radius: 5px;
+  background: #fffdf7;
+}
+
+input[type="number"] {
+  max-width: 80px;
+}
+
+input[type="range"] {
+  flex: 1;
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+}
+
+.actions {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #f3ead6;
+  border-top: 1px solid #e6d6b6;
+}
+
+button {
+  padding: 7px 16px;
+  font: inherit;
+  font-weight: 600;
+  color: #fff;
+  background: #c9954f;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #b5813f;
+}
+
+.saved {
+  color: #6f9e6a;
+  font-weight: 600;
+}
+
+.hidden {
+  display: none;
+}
