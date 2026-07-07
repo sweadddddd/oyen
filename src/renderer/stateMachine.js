@@ -28,6 +28,7 @@ class OyenState {
       stretchY: 1, // mochi drag
       squashY: 1,
       extraSquint: 0,
+      hat: false, // party hat accessory (settings toggle)
     };
 
     this._blinkTimer = this._randBlink();
@@ -82,6 +83,7 @@ class OyenState {
     p.pupilY = m.pupilY;
     p.tint = m.tint;
     p.blush = m.blush;
+    p.hat = m.hat;
 
     switch (this.pose) {
       case 'idle':

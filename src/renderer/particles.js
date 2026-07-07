@@ -10,8 +10,21 @@ class Particles {
     this.ctx = ctx;
     this.steam = [];
     this.zzz = [];
+    this.hearts = [];
     this.paper = null; // { x, y, len, target, life }
     this.purrLines = 0;
+  }
+
+  emitHeart(x, y) {
+    if (this.hearts.length > 20) return;
+    this.hearts.push({
+      x: x + (Math.random() - 0.5) * 14,
+      y,
+      vy: -14 - Math.random() * 8,
+      wob: Math.random() * Math.PI * 2,
+      life: 1,
+      size: 6 + Math.random() * 3,
+    });
   }
 
   emitSteam(x, y) {
@@ -49,6 +62,13 @@ class Particles {
       z.life -= dt * 0.5;
     }
     this.zzz = this.zzz.filter((z) => z.life > 0);
+
+    for (const h of this.hearts) {
+      h.y += h.vy * dt;
+      h.wob += dt * 5;
+      h.life -= dt * 0.7;
+    }
+    this.hearts = this.hearts.filter((h) => h.life > 0);
 
     if (this.paper) {
       const p = this.paper;
@@ -97,6 +117,15 @@ class Particles {
       ctx.globalAlpha = Math.max(0, z.life);
       ctx.font = `${Math.round(z.size)}px monospace`;
       ctx.fillText('z', z.x, z.y);
+    }
+    ctx.globalAlpha = 1;
+
+    // Floating hearts (purr/petting).
+    ctx.fillStyle = '#e86b8a';
+    for (const h of this.hearts) {
+      ctx.globalAlpha = Math.max(0, h.life);
+      ctx.font = `${Math.round(h.size)}px sans-serif`;
+      ctx.fillText('♥', h.x + Math.sin(h.wob) * 4, h.y);
     }
     ctx.globalAlpha = 1;
   }

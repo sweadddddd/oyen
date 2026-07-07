@@ -24,6 +24,8 @@ const OYEN = (() => {
     collar: '#b5813f',
     outline: '#a97b3d',
     whisker: 'rgba(255,255,255,0.75)',
+    hatBody: '#5b8fd6',
+    hatBodyDark: '#3f6cb0',
   };
 
   // Default parameter set. Poses override a subset of these.
@@ -48,6 +50,7 @@ const OYEN = (() => {
       offsetY: 0,
       forePawReach: 0, // 0..1 front paws extended (pounce/scroll)
       blush: 0,
+      hat: false, // party hat accessory (settings toggle)
     };
   }
 
@@ -289,6 +292,21 @@ const OYEN = (() => {
     R(ctx, cx - 11, top + 11, 4, 1, C.whisker);
     R(ctx, cx + 7, top + 9, 4, 1, C.whisker);
     R(ctx, cx + 7, top + 11, 4, 1, C.whisker);
+
+    // Optional party-hat accessory, perched above the ears (drawn last so it
+    // sits on top; doesn't touch the base head/ear drawing above).
+    if (p.hat) drawHat(ctx, cx, top);
+  }
+
+  function drawHat(ctx, cx, top) {
+    // Sits flush on the head block (top), slightly over the ear bases, so
+    // there's no transparent gap between the brim and the head.
+    const base = top - 2;
+    R(ctx, cx - 7, base, 14, 2, C.pink); // brim band
+    R(ctx, cx - 5, base - 3, 10, 3, C.hatBody);
+    R(ctx, cx - 3, base - 6, 6, 3, C.hatBody);
+    R(ctx, cx - 1, base - 8, 2, 2, C.hatBodyDark);
+    R(ctx, cx - 1, base - 10, 2, 2, C.cream); // pompom
   }
 
   function drawEyes(ctx, cx, y, p) {

@@ -8,6 +8,7 @@ const FIELDS = {
   userName: 'value',
   spriteScale: 'value',
   muteSound: 'checked',
+  hatEnabled: 'checked',
   stretchEnabled: 'checked',
   stretchIntervalMin: 'value',
   pomodoroEnabled: 'checked',

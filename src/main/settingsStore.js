@@ -35,6 +35,9 @@ const DEFAULTS = Object.freeze({
 
   // Overall scale multiplier for the sprite (4-6x pixel scaling).
   spriteScale: 5,
+
+  // Party hat accessory (first step toward a future hat/skin picker).
+  hatEnabled: false,
 });
 
 class SettingsStore {

@@ -42,6 +42,7 @@ class Cat {
     this._hopAnim = null;
     this._steamAcc = 0;
     this._zAcc = 0;
+    this._heartAcc = 0;
     this._wander = { nextAt: Date.now() + 8000, target: null };
   }
 
@@ -386,15 +387,28 @@ class Cat {
       }
     }
 
+    // Floating hearts while purring (petting).
+    if (this.state.is('purr')) {
+      this._heartAcc += dt;
+      if (this._heartAcc > 0.5) {
+        this._heartAcc = 0;
+        const h = this.headCenter();
+        const c = this.app.toClient(h.x, h.y);
+        this.app.particles.emitHeart(c.x, c.y - 10 * this.scale);
+      }
+    }
+
     // Gentle idle wandering.
     this._maybeWander(dt, now);
   }
 
   _maybeWander(dt, now) {
-    if (!this.state.is('idle')) {
-      if (this.state.is('walk') && !this._wander.target) this.state.set('idle');
-      return;
-    }
+    // Must stay reachable while pose is 'walk', not just 'idle' - otherwise
+    // the first step into 'walk' below makes state.is('idle') false forever
+    // after, and this function would never run the movement branch again,
+    // leaving the cat stuck mid-walk.
+    if (!this.state.is('idle') && !this.state.is('walk')) return;
+
     if (this._wander.target != null) {
       const dx = this._wander.target - this.sx;
       if (Math.abs(dx) < 3) {
@@ -408,6 +422,13 @@ class Cat {
       }
       return;
     }
+
+    // Walking with no target (shouldn't normally happen) - recover to idle.
+    if (this.state.is('walk')) {
+      this.state.set('idle');
+      return;
+    }
+
     if (now >= this._wander.nextAt && Date.now() - this.lastActivity < 40000) {
       const vb = this.app.geometry.virtual;
       const range = 180;
@@ -493,6 +514,7 @@ class App {
     window.oyen.onSettings((s) => {
       this.settings = s;
       this.cat.setScale(s.spriteScale || 5);
+      this.cat.state.mods.hat = !!s.hatEnabled;
       this.sound.setMuted(!!s.muteSound);
       this.reminders.setSettings(s);
       this.bubbles.setPinned(

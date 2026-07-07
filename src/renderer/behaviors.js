@@ -20,7 +20,7 @@ class Behaviors {
 
     // Petting detection.
     this._petAccum = 0;
-    this._petMoves = 0;
+    this._lastPetMoveAt = 0;
 
     // Kneading (keyboard) sync.
     this._keyTimes = [];
@@ -41,11 +41,14 @@ class Behaviors {
 
     const dist = this.cat.distanceTo(e.x, e.y);
 
-    // Petting: gentle movement over the head region.
+    // Petting: gentle movement over the head region. Tracked as "last time
+    // this happened" rather than a per-frame counter, since the render loop
+    // can run faster than input events arrive - a counter reset every frame
+    // would mostly see zero and never accumulate toward PET_SUSTAIN.
     if (dist < PET_RADIUS && this.cat.overHead(e.x, e.y)) {
       const gentle = e.speed > 15 && e.speed < 650;
       if (gentle) {
-        this._petMoves++;
+        this._lastPetMoveAt = Date.now();
       }
     }
   }
@@ -129,10 +132,12 @@ class Behaviors {
       return;
     }
 
-    // Petting -> purr.
-    if (this._petMoves > 0) {
+    // Petting -> purr. "Currently petting" is a recency window on the last
+    // qualifying move rather than a per-frame counter, so this works
+    // regardless of how the render-loop rate compares to input-event rate.
+    const petting = now - this._lastPetMoveAt < 150;
+    if (petting) {
       this._petAccum += dt;
-      this._petMoves = 0;
       if (this._petAccum > PET_SUSTAIN) {
         if (!cat.state.is('purr')) {
           cat.state.set('purr');
@@ -203,7 +208,7 @@ class Behaviors {
 
   _resetPet() {
     this._petAccum = 0;
-    this._petMoves = 0;
+    this._lastPetMoveAt = 0;
   }
 }
 
