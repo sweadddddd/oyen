@@ -5,7 +5,10 @@
 // declare a duration and a pose to fall back to; looping poses run until the
 // behavior layer switches them.
 
-const { OYEN } = typeof require !== 'undefined' ? require('./sprite') : window;
+// OYEN is already a shared global from sprite.js's top-level `const` —
+// classic <script> tags share one global lexical scope, so declaring it
+// again here (even via `var`, which still hoists to script scope) throws
+// "Identifier 'OYEN' has already been declared".
 
 class OyenState {
   constructor() {

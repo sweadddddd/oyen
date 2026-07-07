@@ -5,13 +5,11 @@
 // global input / settings / fullscreen / status feeds into the behavior layer,
 // reminders, particles, sound and speech bubbles.
 
-const { OYEN } = window;
-const { OyenState } = window;
-const { Behaviors } = window;
-const { Reminders } = window;
-const { Particles } = window;
-const { Bubbles } = window;
-const { Sound } = window;
+// OYEN, OyenState, Behaviors, Reminders, Particles, Bubbles and Sound are
+// already top-level `const`/`class` declarations from the earlier <script>
+// tags in index.html. Classic scripts share one global lexical scope, so
+// those names are usable here as bare globals — redeclaring them (even via
+// destructuring `= window`) throws "Identifier has already been declared".
 
 const BASE_W = OYEN.BASE_W;
 const BASE_H = OYEN.BASE_H;
